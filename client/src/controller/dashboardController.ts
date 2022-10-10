@@ -35,7 +35,6 @@ export const loginCustomToken = async (req, res) =>{
                         })
             }         
 }
-
 export const validateQRCode = (req, res) =>{
   let latitude = req.body.latitude;
   let longitude = req.body.longitude;
