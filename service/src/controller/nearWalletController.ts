@@ -20,7 +20,6 @@ export const createWallet = async  (req, res) =>{
                     })
             });
 }
-
 export const getTransactionStatus = async  (req, res) =>{
     const provider = new providers.JsonRpcProvider(
         "https://archival-rpc.testnet.near.org"
@@ -45,7 +44,6 @@ export const getTransactionStatus = async  (req, res) =>{
             })
     }
 }
-
 export const getTransactionDetails = async  (req, res) =>{
     const near = await connect(config);
     const startBlock = req.body.startBlock;
