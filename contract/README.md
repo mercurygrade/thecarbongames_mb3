@@ -1,4 +1,4 @@
-# Donation Contract
+# Payment Contract
 
 The smart contract exposes multiple methods to handle paying money to a `beneficiary` set on initialization.
 

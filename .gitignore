@@ -19,6 +19,9 @@ package-lock.json
 # donation-rust
 /donation-rust
 
+# example-usage
+/example-usage
+ 
 # production
 /build
 
