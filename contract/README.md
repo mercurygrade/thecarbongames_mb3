@@ -1,6 +1,6 @@
 # Donation Contract
 
-The smart contract exposes multiple methods to handle donating money to a `beneficiary` set on initialization.
+The smart contract exposes multiple methods to handle paying money to a `beneficiary` set on initialization.
 
 ```rust
    #[payable] // Public - People can attach money
