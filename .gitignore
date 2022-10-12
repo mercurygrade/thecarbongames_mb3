@@ -16,6 +16,9 @@ package-lock.json
 # testing
 /coverage
 
+# donation-rust
+/donation-rust
+
 # production
 /build
 
