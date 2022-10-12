@@ -21,16 +21,16 @@ The smart contract exposes multiple methods to handle paying money to a `benefic
       payment_amount
     };
 
-    // Persist in storage the amount paymentd so far
+    // Persist in storage the amount payment so far
     paymentd_so_far += payment_amount;
     self.payments.insert(&donor, &paymentd_so_far);
     
-    log!("Thank you {} for donating {}! You paymentd a total of {}", donor.clone(), payment_amount, paymentd_so_far);
+    log!("Thank you {} for making {}! You payment a total of {}", donor.clone(), payment_amount, paymentd_so_far);
     
     // Send the money to the beneficiary
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
 
-    // Return the total amount paymentd so far
+    // Return the total amount payment so far
     U128(paymentd_so_far)
   }
 ```
@@ -65,7 +65,7 @@ near view <dev-account> beneficiary
 
 <br />
 
-## 3. Get Number of Payments
+## 3. Make  Payments
 
 `payment` forwards any attached money to the `beneficiary` while keeping track of it.
 
