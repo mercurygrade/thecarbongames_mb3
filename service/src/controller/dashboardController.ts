@@ -47,7 +47,6 @@ export const validateQRCode = (req, res) =>{
 export const userAccountUpgrade = async (req, res) =>{
   let walletname = req.body.walletname;
   let plan = req.body.plan;
-
   const near = await connect({ ...config, keyStore });
   const creatorAccount = await near.account(creatorAccountId);
   const keyPair = KeyPair.fromRandom("ed25519");

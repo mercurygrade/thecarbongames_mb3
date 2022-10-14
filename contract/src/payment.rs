@@ -25,22 +25,22 @@ impl Contract {
     let payment_amount: Balance = env::attached_deposit();
 
     let mut paymentd_so_far = self.payments.get(&donor).unwrap_or(0);
-
+    
     let to_transfer: Balance = if paymentd_so_far == 0 {
       // This is the user's first payment, lets register it, which increases storage
       assert!(payment_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
-
+     
       // Subtract the storage cost to the amount to transfer
       payment_amount - STORAGE_COST
     }else{
       payment_amount
     };
-
+    
     // Persist in storage the amount paymentd so far
     paymentd_so_far += payment_amount;
     self.payments.insert(&donor, &paymentd_so_far);
     
-    log!("Thank you {} for donating {}! You paymentd a total of {}", donor.clone(), payment_amount, paymentd_so_far);
+    log!("Thank you {} for paying {}! You paymentd a total of {}", donor.clone(), payment_amount, paymentd_so_far);
     
     // Send the money to the beneficiary
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
