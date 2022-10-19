@@ -29,7 +29,7 @@ const UpgradeAccount = () => {
         walletConnection.requestSignIn(
           paymentContractName, // contract requesting access
           "The Carbongames Account Upgrade", // optional title
-          `http://localhost:3000/upgrade-account-success?plan_type=${plan_type}&priceUSD=${priceUSD}`, // optional redirect URL on success
+          `https://thecarbongames.web.app/upgrade-account-success?plan_type=${plan_type}&priceUSD=${priceUSD}`, // optional redirect URL on success
           "" // optional redirect URL on failure
         )
       }

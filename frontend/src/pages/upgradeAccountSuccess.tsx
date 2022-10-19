@@ -2,6 +2,8 @@ import * as nearAPI from "near-api-js"
 import {useEffect, useState} from 'react';
 import { connectionConfig, paymentContractName} from "config/config";
 import ClipLoader from "react-spinners/ClipLoader";  
+
+
 const UpgradeAccountSuccess = (props:any) =>{  
   const search = window.location.search;
   const params = new URLSearchParams(search);
@@ -25,7 +27,7 @@ const UpgradeAccountSuccess = (props:any) =>{
         changeMethods: ["payment"],
       }
     );
-
+    
     //get current rate
     let data = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd").then(response => response.json())
     const near2usd = data['near']['usd']
@@ -35,7 +37,7 @@ const UpgradeAccountSuccess = (props:any) =>{
       //@ts-ignore
     await contract.payment(
       {
-        callbackUrl: 'http://localhost:3000/upgrade-completed', // callbackUrl after the transaction approved (optional)
+        callbackUrl: 'https://thecarbongames.web.app/upgrade-completed', // callbackUrl after the transaction approved (optional)
         meta: `userWallet=${walletConnection.getAccountId()}|${plan_type}|${rounded_two_decimals}`, // meta information NEAR Wallet will send back to the application. `meta` will be attached to the `callbackUrl` as a url param
         args: {},
         gas: 300000000000000, // attached GAS (optional)

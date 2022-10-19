@@ -23,6 +23,7 @@
     "autoprefixer": "^10.4.2",
     "axios": "^0.27.2",
     "cogo-toast": "^4.2.3",
+    "firebase": "^9.12.1",
     "near-api-js": "^0.45.1",
     "postcss": "^8.4.8",
     "react": "^17.0.2",
