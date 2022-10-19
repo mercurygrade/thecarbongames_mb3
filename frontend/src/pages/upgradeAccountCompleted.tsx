@@ -22,20 +22,22 @@ const UpgradeAccountCompleted = (props:any) => {
     UpdateUserInfo();
   },[1]);
   const UpdateUserInfo = async ()=> {
+    let parsequery = signMeta?.split("userWallet=")[1];
+    let getWallet = parsequery?.split("|")[0];
+    let getPlanType = parsequery?.split("|")[1];
+
     try{
-      const q = query(collection(db, "users"), where("near_wallet.account_id", "==", 'aminubi.thecarbongames.testnet'));
+      const q = query(collection(db, "users"), where("near_wallet.account_id", "==", `${getWallet}`));
       const querySnapshot = await getDocs(q);
       let docID = '';
       querySnapshot.forEach((doc) => {
         docID = doc.id;
       });
-      console.log(`docID=== ${docID}`)
       const user = doc(db, "users", docID);
       await updateDoc(user, {
-          plan_type: ['event_manager'],
+          plan_type: [`${getPlanType}`],
       });
     }catch(err){
-      console.log(`err ${err}`);
     }
 }
 return (
