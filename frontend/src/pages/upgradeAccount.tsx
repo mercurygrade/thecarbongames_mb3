@@ -8,9 +8,20 @@ const UpgradeAccount = () => {
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const plan_type = params.get('plan_type');
-  useEffect(()=>{NEARLogin()},[1])
+  const priceUSD = params.get('priceUSD');
+
+  useEffect(()=>{
+    if(plan_type == null || priceUSD == null){
+
+    }
+    else{
+      NEARLogin()
+    }
+ 
+  },[1])
   const NEARLogin = async ()=>{
  
+    
         const { connect,WalletConnection } = nearAPI
         // connect to NEAR
         const nearConnection:any = await connect(connectionConfig);
@@ -18,13 +29,14 @@ const UpgradeAccount = () => {
         walletConnection.requestSignIn(
           paymentContractName, // contract requesting access
           "The Carbongames Account Upgrade", // optional title
-          `https://thecarbongames.web.app/upgrade-account-success?plan_type=${plan_type}`, // optional redirect URL on success
+          `http://localhost:3000/upgrade-account-success?plan_type=${plan_type}&priceUSD=${priceUSD}`, // optional redirect URL on success
           "" // optional redirect URL on failure
         )
       }
   return(
     <div className="text-center">
-    <ClipLoader color={"green"} loading={true} size={150} />
+      
+     <ClipLoader color={"green"} loading={true} size={150} />
     </div>
   )
 }
