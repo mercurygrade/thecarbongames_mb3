@@ -2,7 +2,9 @@ import React, { useEffect } from "react"
 import * as nearAPI from "near-api-js"
 import ClipLoader from "react-spinners/ClipLoader";  
 const NearWalletConnect = () => {  
-    useEffect(()=>{NEARLogin()},[1])
+    useEffect(()=>{
+     NEARLogin()
+    },[1])
     const NEARLogin = async ()=>{
          const { connect, keyStores,WalletConnection } = nearAPI
         const connectionConfig:any = {  
