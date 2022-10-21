@@ -23,7 +23,7 @@ const UpgradeAccountSuccess = (props:any) =>{
     {
         viewMethods: ["get_payments"],
         changeMethods: ["payment"],
-      }
+    }
     );
     //get current rate
     let data = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd").then(response => response.json())
