@@ -44,7 +44,7 @@ impl Contract {
     
     // Send the money to the beneficiary
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
-
+    
     // Return the total amount paymentd so far
     U128(paymentd_so_far)
   }
