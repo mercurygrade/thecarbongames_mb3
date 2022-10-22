@@ -5,6 +5,8 @@ const admin = require("firebase-admin");
 const db = getFirestore();
 require("dotenv").config();
 export const loginCustomToken = async (req, res) =>{
+
+  try{
         let near_wallet = req.body.near_wallet;
         const results :any = [];
         await db
@@ -35,7 +37,15 @@ export const loginCustomToken = async (req, res) =>{
                         },
                         error:null,
                         })
-            }         
+            }     
+       }
+       catch(e){
+          res.send({
+          status:'failed',
+          data:null,
+          error:`${e}`,
+          })
+       }    
 }
 export const validateQRCode = (req, res) =>{
   let latitude = req.body.latitude;
