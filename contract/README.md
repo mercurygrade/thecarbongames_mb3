@@ -12,9 +12,8 @@ near call  <contractID>  add_event  '{"event_id": "snsnsSHiusnuis", "title":"web
 View events on the blockchain:
 
 `
-near call  <contractID>  get_events '{"from_index": "0", "limit":"100000000000"}'   --accountId <accountID>
+near call  <contractID>  get_events '{"from_index": "0", "limit":10}'   --accountId <accountID>
 `
-
 
 # Quickstart
 
