@@ -23,7 +23,7 @@ impl Contract {
     // Get who is calling the method and how much $NEAR they attached
     let donor: AccountId = env::predecessor_account_id();
     let payment_amount: Balance = env::attached_deposit();
-
+    
     let mut paymentd_so_far = self.payments.get(&donor).unwrap_or(0);
     
     let to_transfer: Balance = if paymentd_so_far == 0 {
@@ -44,7 +44,7 @@ impl Contract {
     
     // Send the money to the beneficiary
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
-    
+
     // Return the total amount paymentd so far
     U128(paymentd_so_far)
   }

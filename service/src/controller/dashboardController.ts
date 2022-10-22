@@ -1,6 +1,6 @@
 const { getFirestore, Timestamp, FieldValue, } = require('firebase-admin/firestore');
-const { connect, KeyPair, utils ,providers} = require("near-api-js");
-import {keyStore,config, creatorAccountId } from "../config";
+const { connect, KeyPair, utils ,providers,Contract} = require("near-api-js");
+import {keyStore,config, creatorAccountId,creatorAccountIdEvents } from "../config";
 const admin = require("firebase-admin");
 const db = getFirestore();
 require("dotenv").config();
@@ -44,6 +44,8 @@ export const validateQRCode = (req, res) =>{
     data:`validate qr code ${latitude} ${longitude}`
   });
 }
+
+//@abadoned
 export const userAccountUpgrade = async (req, res) =>{
   let walletname = req.body.walletname;
   let plan = req.body.plan;
@@ -59,4 +61,46 @@ await account.sendMoney(
   "5000000000000000000000000" // amount in yoctoNEAR
 );
   res.send({message:`Make payment in $NEAR ${walletname} and ${plan}`})
+}
+
+export const addEvent = async (req,res) =>{
+
+  let event_id = req.body.event_id;
+  let title = req.body.title;
+  let description = req.body.description;
+  let latitude = req.body.latitude;
+  let longitude = req.body.longitude;
+
+  const near = await connect({ ...config, keyStore });
+  const creatorAccount = await near.account(creatorAccountIdEvents);
+  const keyPair = KeyPair.fromRandom("ed25519");
+  const publicKey = keyPair.publicKey.toString();
+  await keyStore.setKey(config.networkId, creatorAccountIdEvents, keyPair);
+  const contract = new Contract(
+    creatorAccountIdEvents,
+    creatorAccountIdEvents,
+    {
+        viewMethods: ["get_events"],
+        changeMethods: ["add_event"],
+    }
+    );
+     //@ts-ignore
+     await contract.add_event({
+      callbackUrl: '', // callbackUrl after the transaction approved (optional)
+      meta: `meta=`, // meta information NEAR Wallet will send back to the application. `meta` will be attached to the `callbackUrl` as a url param
+      args: {
+        event_id:event_id,
+        title:title,
+        description:description,
+        latitude:latitude,
+        longitude:longitude
+      },
+      gas: 300000000000000, // attached GAS (optional)
+      //@ts-ignore
+      amount: `1000000000000000000000000` // attached deposit in yoctoNEAR (optional)
+    }
+    );
+  res.send({
+    message:"add-event"
+  })
 }
