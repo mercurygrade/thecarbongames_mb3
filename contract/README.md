@@ -1,6 +1,6 @@
-# Payment Contract
+# Carbongames smart Contract
 
-The smart contract exposes multiple methods to handle paying money for account upgrade
+The smart contract exposes multiple methods to handle paying money for account upgrade and for creating events on the blockchain
 <br />
 
 # Events or meetups Contract carbon games
