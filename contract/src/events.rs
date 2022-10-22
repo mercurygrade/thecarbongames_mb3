@@ -12,11 +12,10 @@ pub struct PostedMessage {
   pub premium: bool, 
   pub sender: AccountId,
   pub event_id: String,
-  pub title: String
-  pub description: String
-  pub latitude: String
+  pub title: String,
+  pub description: String,
+  pub latitude: String,
   pub longitude: String
-
 }
 
 #[near_bindgen]
@@ -44,9 +43,8 @@ impl Events {
     self.messages.push(&message);
   }
 
-  pub fn get_events(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<PostedMessage>{
+  pub fn get_events(&self, from_index:Option<U128>, limit:Option<u64>) -> Vector<PostedMessage>{
     let from = u128::from(from_index.unwrap_or(U128(0)));
-    
     self.messages.iter()
     .skip(from as usize)
     .take(limit.unwrap_or(10) as usize)
@@ -68,10 +66,10 @@ mod tests {
   #[test]
   fn add_event() {
     let mut contract = Events::default();
-    contract.add_event("xDheodkmospsps".to_string()
-                       "Web 3 Developer Conference".to_string()
-                       "Web 3 Developer Conference for developers".to_string()
-                       "6.3030933".to_string()
+    contract.add_event("xDheodkmospsps".to_string(),
+                       "Web 3 Developer Conference".to_string(),
+                       "Web 3 Developer Conference for developers".to_string(),
+                       "6.3030933".to_string(),
                        "2.3030933".to_string()
                       );
 
@@ -83,23 +81,23 @@ mod tests {
   #[test]
   fn iters_messages() {
     let mut contract = Events::default();
-    contract.add_event("xDheodkmospsps".to_string()
-                        "Web 3 Developer Conference".to_string()
-                        "Web 3 Developer Conference for developers".to_string()
-                        "6.3030933".to_string()
+    contract.add_event("xDheodkmospsps".to_string(),
+                        "Web 3 Developer Conference".to_string(),
+                        "Web 3 Developer Conference for developers".to_string(),
+                        "6.3030933".to_string(),
                         "2.3030933".to_string()); 
    
-    contract.add_event("jssjskjskjs".to_string()
-                        "Web 3 ".to_string()
-                        "Another".to_string()
-                        "6.3030933".to_string()
+    contract.add_event("jssjskjskjs".to_string(),
+                        "Web 3 ".to_string(),
+                        "Another".to_string(),
+                        "6.3030933".to_string(),
                         "2.3030933".to_string()); 
 
                            
-    contract.add_event("sksJSJajsisi".to_string()
-                      "Web 3.s".to_string()
-                      "Another one lets go".to_string()
-                      "6.3030933".to_string()
+    contract.add_event("sksJSJajsisi".to_string(),
+                      "Web 3.s".to_string(),
+                      "Another one lets go".to_string(),
+                      "6.3030933".to_string(),
                       "2.3030933".to_string()); 
                            
     let messages = &contract.get_events(None, None);

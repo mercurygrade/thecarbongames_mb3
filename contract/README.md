@@ -1,41 +1,19 @@
 # Payment Contract
 
-The smart contract exposes multiple methods to handle paying money to a `beneficiary` set on initialization.
-
-```rust
-   #[payable] // Public - People can attach money
-  pub fn payment(&mut self) -> U128 {
-    // Get who is calling the method and how much $NEAR they attached
-    let donor: AccountId = env::predecessor_account_id();
-    let payment_amount: Balance = env::attached_deposit();
-
-    let mut paymentd_so_far = self.payments.get(&donor).unwrap_or(0);
-
-    let to_transfer: Balance = if paymentd_so_far == 0 {
-      // This is the user's first payment, lets register it, which increases storage
-      assert!(payment_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
-
-      // Subtract the storage cost to the amount to transfer
-      payment_amount - STORAGE_COST
-    }else{
-      payment_amount
-    };
-
-    // Persist in storage the amount payment so far
-    paymentd_so_far += payment_amount;
-    self.payments.insert(&donor, &paymentd_so_far);
-    
-    log!("Thank you {} for making {}! You payment a total of {}", donor.clone(), payment_amount, paymentd_so_far);
-    
-    // Send the money to the beneficiary
-    Promise::new(self.beneficiary.clone()).transfer(to_transfer);
-
-    // Return the total amount payment so far
-    U128(paymentd_so_far)
-  }
-```
-
+The smart contract exposes multiple methods to handle paying money for account upgrade
 <br />
+
+# Events or meetups Contract carbon games
+Add an event to the SC
+`
+near call  <contractID>  add_event  '{"event_id": "snsnsSHiusnuis", "title":"web3 event 2022", "description":"this is a nice event to meet other developers", "latitude":"6.33333", "longitude":"3.44444"}' --accountId <accountID>
+`
+
+View events on the blockchain:
+
+near call  <contractID>  get_events '{"from_index": "0", "limit":"4"}'   --accountId <accountID>
+
+
 
 # Quickstart
 

@@ -3,6 +3,9 @@ use near_sdk::{env, near_bindgen, AccountId};
 use near_sdk::collections::{UnorderedMap};
 
 mod payment;
+mod events;
+
+use events::*;
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
