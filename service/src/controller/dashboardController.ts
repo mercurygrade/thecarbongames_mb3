@@ -1,3 +1,4 @@
+const { exec } = require('child_process');
 const { getFirestore, Timestamp, FieldValue, } = require('firebase-admin/firestore');
 const { connect, KeyPair, utils ,providers,Contract} = require("near-api-js");
 import {keyStore,config, creatorAccountId,creatorAccountIdEvents } from "../config";
@@ -74,43 +75,32 @@ await account.sendMoney(
 }
 
 export const addEvent = async (req,res) =>{
-
   let event_id = req.body.event_id;
   let title = req.body.title;
   let description = req.body.description;
   let latitude = req.body.latitude;
   let longitude = req.body.longitude;
-
-  const near = await connect({ ...config, keyStore });
-  const creatorAccount = await near.account(creatorAccountIdEvents);
-  const keyPair = KeyPair.fromRandom("ed25519");
-  const publicKey = keyPair.publicKey.toString();
-  await keyStore.setKey(config.networkId, creatorAccountIdEvents, keyPair);
-  const contract = new Contract(
-    creatorAccountIdEvents,
-    creatorAccountIdEvents,
-    {
-        viewMethods: ["get_events"],
-        changeMethods: ["add_event"],
+  
+   
+  exec(`near call ${creatorAccountIdEvents} add_event '{"event_id": "${event_id}", "title":"${title}", "description":"${description}", "latitude":"${latitude}", "longitude":"${longitude}"}' --accountId ${creatorAccountIdEvents}`, (err, stdout, stderr) => {
+    if (err) {
+      console.log(err)
+      return;
     }
-    );
-     //@ts-ignore
-     await contract.add_event({
-      callbackUrl: '', // callbackUrl after the transaction approved (optional)
-      meta: `meta=`, // meta information NEAR Wallet will send back to the application. `meta` will be attached to the `callbackUrl` as a url param
-      args: {
-        event_id:event_id,
-        title:title,
-        description:description,
-        latitude:latitude,
-        longitude:longitude
-      },
-      gas: 300000000000000, // attached GAS (optional)
-      //@ts-ignore
-      amount: `1000000000000000000000000` // attached deposit in yoctoNEAR (optional)
+    if(!stderr){
+      let cleanResponse = stdout;
+      res.json({
+        status:'success',
+        data: cleanResponse,
+        error:null,
+        })
     }
-    );
-  res.send({
-    message:"add-event"
-  })
-}
+    else{
+      res.send({
+        status:'failed',
+        data:null,
+        error:stderr,
+        })
+    }
+    });
+  }

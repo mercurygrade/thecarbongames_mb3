@@ -4,6 +4,6 @@ const dashboardRoute = express()
 dashboardRoute.post('/login', loginCustomToken)
 dashboardRoute.post('/qr-validate', validateQRCode)
 dashboardRoute.post('/upgrade-account', userAccountUpgrade)
-dashboardRoute.post('/add-event',  addEvent)
+dashboardRoute.post('/submit-event-to-blockchain',  addEvent)
 
 module.exports = dashboardRoute

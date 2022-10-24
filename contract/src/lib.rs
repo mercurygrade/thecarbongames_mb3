@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, near_bindgen, AccountId};
+use near_sdk::{env, near_bindgen, AccountId}; 
 use near_sdk::collections::{UnorderedMap};
 
 mod payment;
@@ -51,7 +51,7 @@ impl Contract {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use near_sdk::testing_env;
+  use near_sdk::testing_env;x
   use near_sdk::test_utils::VMContextBuilder;
   use near_sdk::Balance;
 
@@ -67,7 +67,7 @@ mod tests {
   #[test]
   fn payment() {
       let mut contract = Contract::init(BENEFICIARY.parse().unwrap());
-
+      
       // Make a payment
       set_context("donor_a", 1*NEAR);
       contract.payment();
@@ -75,7 +75,7 @@ mod tests {
 
       // Check the payment was recorded correctly
       assert_eq!(first_payment.total_amount.0, 1*NEAR);
-
+      
       // Make another payment
       set_context("donor_b", 2*NEAR);
       contract.payment();
@@ -83,7 +83,7 @@ mod tests {
       
       // Check the payment was recorded correctly
       assert_eq!(second_payment.total_amount.0, 2*NEAR);
-
+      
       // User A makes another payment on top of their original
       set_context("donor_a", 1*NEAR);
       contract.payment();
@@ -91,7 +91,7 @@ mod tests {
 
       // Check the payment was recorded correctly
       assert_eq!(first_payment.total_amount.0, 1*NEAR * 2);
-
+      
       assert_eq!(contract.number_of_donors(), 2);
   }
 
