@@ -51,7 +51,7 @@ impl Contract {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use near_sdk::testing_env;x
+  use near_sdk::testing_env;
   use near_sdk::test_utils::VMContextBuilder;
   use near_sdk::Balance;
 

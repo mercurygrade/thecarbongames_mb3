@@ -5,6 +5,7 @@ use near_sdk::collections::{Vector};
 use near_sdk::json_types::{U128};
 
 const POINT_ONE: Balance = 100_000_000_000_000_000_000_000;
+pub const STORAGE_COST: u128 = 1_000_000_000_000_000_000_000;
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -32,17 +33,23 @@ impl Default for Events{
 
 #[near_bindgen]
 impl Events {
-
+  
   #[payable]
   pub fn add_event(&mut self, event_id: String, title: String, description: String, latitude: String, longitude: String) {
     // If the user attaches more than 0.01N the message is premium - this is optional incase a user wants to attach money to an event.
     let premium = env::attached_deposit() >= POINT_ONE;
+    let payment_amount: Balance = env::attached_deposit();
     let sender = env::predecessor_account_id();
-
-    let message = PostedMessage{premium, sender, event_id, title, description, latitude, longitude };
-    self.messages.push(&message);
+    if payment_amount < 1 {
+    //make sure user makes payment of 1N before making the transactoin
+    assert!(payment_amount < 1, "Attach at least {} yoctoNEAR", STORAGE_COST);
+    }
+    else{
+      let message = PostedMessage{premium, sender, event_id, title, description, latitude, longitude };
+      self.messages.push(&message);
+    }
   }
-
+  
   pub fn get_events(&self, from_index:Option<U128>, limit:Option<u64>) -> Vector<PostedMessage>{
     let from = u128::from(from_index.unwrap_or(U128(0)));
     self.messages.iter()
@@ -62,7 +69,7 @@ impl Events {
 #[cfg(test)]
 mod tests {
   use super::*;
-
+  
   #[test]
   fn add_event() {
     let mut contract = Events::default();
