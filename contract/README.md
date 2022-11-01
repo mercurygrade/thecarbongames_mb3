@@ -9,7 +9,7 @@ Add an event to the SC - user must pay 1N to post an event to the SC.
 `near call <contractID> add_event '{"event_id": "snsnsSHiusnuis", "title":"web3 event 2022", "description":"this is a nice event to meet other developers", "latitude":"6.33333", "longitude":"3.44444"}' --accountId <accountID> --amount 1`
 
 # Sample Integration with near sdk
-<code>
+```js
 let walletConnection = new WalletConnection(nearConnection,null); 
 const account = await nearConnection.account(walletConnection.getAccountId());
 const contract = new Contract( walletConnection.account(), paymentContractName, 
@@ -26,7 +26,7 @@ changeMethods: ["payment","add_event"],
 }
 );
 
-</code>
+```
 
 View events on the blockchain:
 
