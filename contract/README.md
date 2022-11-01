@@ -9,12 +9,25 @@ Add an event to the SC - user must pay 1N to post an event to the SC.
 `near call <contractID> add_event '{"event_id": "snsnsSHiusnuis", "title":"web3 event 2022", "description":"this is a nice event to meet other developers", "latitude":"6.33333", "longitude":"3.44444"}' --accountId <accountID> --amount 1`
 
 # Sample Integration with near sdk
+<code>
+let walletConnection = new WalletConnection(nearConnection,null); 
+const account = await nearConnection.account(walletConnection.getAccountId());
+const contract = new Contract( walletConnection.account(), paymentContractName, 
+{ viewMethods: ["get_payments"], 
+changeMethods: ["payment","add_event"],
+ });
 
-`let walletConnection = new WalletConnection(nearConnection,null); const account = await nearConnection.account(walletConnection.getAccountId()) const contract = new Contract( walletConnection.account(), paymentContractName, { viewMethods: ["get_payments"], changeMethods: ["payment","add_event"], } ); //interact with the event smart contract await contract.add_event( { callbackUrl: '', // callbackUrl after the transaction approved (optional) args: {"event_id": "snsnsSHiusnuis", "title":"web3 event 2022", "description":"this is a nice event to meet other developers", "latitude":"6.33333", "longitude":"3.44444"}, gas: 300000000000000, // attached GAS (optional) amount:`1000000000000000000000000`// attached deposit 1N (required)
+ //interact with the event smart contract 
+ await contract.add_event( { 
+  callbackUrl: '', // callbackUrl after the transaction approved (optional) 
+  args: {"event_id": "snsnsSHiusnuis", "title":"web3 event 2022", "description":"this is a nice event to meet other developers", "latitude":"6.33333", "longitude":"3.44444"}, 
+  gas: 300000000000000, // attached GAS (optional) 
+  amount:`1000000000000000000000000`// attached deposit 1N (required)
 }
 );
 
-`
+</code>
+
 View events on the blockchain:
 
 `near call <contractID> get_events '{"from_index": "0", "limit":10}' --accountId <accountID>`
