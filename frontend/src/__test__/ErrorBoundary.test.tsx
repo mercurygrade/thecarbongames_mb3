@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import ErrorBoundary from '../ErrorBoundary';
-import '@testing-library/jest-dom';
+import { render, screen } from "@testing-library/react";
+import ErrorBoundary from "../ErrorBoundary";
+import "@testing-library/jest-dom";
 
-describe('Error Boundary', () => {
-  test('Error Boundary', () => {
+describe("Error Boundary", () => {
+  test("Error Boundary", () => {
     const ThrowError = () => {
-      throw new Error('Test');
+      throw new Error("Test");
     };
     render(
       <ErrorBoundary>
@@ -13,6 +13,6 @@ describe('Error Boundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByTestId('errorboundary')).toBeVisible();
+    expect(screen.getByTestId("errorboundary")).toBeVisible();
   });
 });

@@ -8,10 +8,10 @@ import * as buffer from "buffer";
 // issue of near-api-js
 // https://github.com/near/near-api-js/issues/757
 (window as any).Buffer = buffer.Buffer;
- 
+
 ReactDOM.render(
   <React.StrictMode>
-       <App />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -1,12 +1,12 @@
 import { BrowserRouter } from "react-router-dom";
-import Router from "routes"; 
+import Router from "routes";
 import "App.css";
- const App = () => { 
+const App = () => {
   if (process.env.REACT_APP_STAGE === "Production") {
     console.log = function no_console() {};
   }
   return (
-      <BrowserRouter>
+    <BrowserRouter>
       <Router />
     </BrowserRouter>
   );
