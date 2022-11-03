@@ -33,7 +33,15 @@ await contract.add_event({
 });
 ```
 
-View events on the blockchain:
+# Add pool fund to event
+
+`near call <contractID> pool_funds '{"event_id": "snsns","amount":"1"}' --accountId <contractID> --amount 1`
+
+# view total number of donors who have pooled funds
+
+`near view <contractID> total_number_of_pool_donors`
+
+# View events on the blockchain:
 
 `near call <contractID> get_events '{"from_index": "0", "limit":10}' --accountId <accountID>`
 

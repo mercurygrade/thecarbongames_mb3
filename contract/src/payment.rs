@@ -29,7 +29,7 @@ impl Contract {
     let to_transfer: Balance = if paymentd_so_far == 0 {
       // This is the user's first payment, lets register it, which increases storage
       assert!(payment_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
-     
+      
       // Subtract the storage cost to the amount to transfer
       payment_amount - STORAGE_COST
     }else{

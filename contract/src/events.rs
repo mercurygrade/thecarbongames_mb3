@@ -3,6 +3,7 @@ use near_sdk::serde::Serialize;
 use near_sdk::{env, AccountId, Balance, near_bindgen,Promise};
 use near_sdk::collections::{Vector};
 use near_sdk::json_types::{U128};
+use near_sdk::collections::{UnorderedMap};
 
 const POINT_ONE: Balance = 100_000_000_000_000_000_000_000;
 pub const STORAGE_COST: u128 = 1_000_000_000_000_000_000_000;
@@ -23,6 +24,8 @@ pub struct PostedMessage {
 pub struct Events {
   pub beneficiary: AccountId,
   messages: Vector<PostedMessage>,
+  pub pool_funds: UnorderedMap<AccountId, String>,
+
 }
 
 impl Default for Events{
@@ -30,6 +33,8 @@ impl Default for Events{
     Self{
     messages: Vector::new(b"m"),
     beneficiary: "thecarbongames-events-15.testnet".parse().unwrap(),
+    pool_funds: UnorderedMap::new(b"d"),
+
   }
   }
 }
@@ -59,7 +64,43 @@ impl Events {
     
   }
   
-  
+   #[payable]
+   pub fn pool_funds(&mut self, event_id:String, amount:String)  {
+    //this method allows the user to pool fund to an event  
+    let donor: AccountId = env::predecessor_account_id(); //account id of pooling
+    let data = [event_id, amount].join("|"); 
+    let payment_amount: Balance = env::attached_deposit();
+
+    let to_transfer: Balance = if payment_amount == 0 {
+      // This is the user's first payment, lets register it, which increases storage
+      assert!(payment_amount > STORAGE_COST, "Attach a deposit");
+      // Subtract the storage cost to the amount to transfer
+      payment_amount - STORAGE_COST
+    }else{
+      payment_amount
+    };
+
+    //send to carbongames
+    Promise::new(self.beneficiary.clone()).transfer(to_transfer);
+    //save to storage
+    self.pool_funds.insert(&donor, &data);
+    
+   }
+
+  // Public - get total number of donors who have pooled funds to the events
+  pub fn number_of_pool_by_donor(&self) -> u64 {
+    let donor: AccountId = env::predecessor_account_id();
+    let mut paymentd_so_far = self.pool_funds.get(&donor).unwrap_or(0);
+    
+    self.pool_funds.len()
+  }
+
+  // Public - get total number of donors who have pooled funds to the events
+  pub fn total_number_of_pool_donors(&self) -> u64 {
+    self.pool_funds.len()
+  }
+   
+
   /* pub fn get_events(&self, from_index:Option<U128>, limit:Option<u64>) -> Vector<PostedMessage>{
    let from = u128::from(from_index.unwrap_or(U128(0)));
     self.messages.iter()
