@@ -35,7 +35,7 @@ await contract.add_event({
 
 # Add pool fund to event
 
-`near call <contractID> pool_funds '{"event_id": "snsns","amount":"1"}' --accountId <contractID> --amount 1`
+`near call <contractID> pool_funds '{"event_id": "snsns","amount":"1"}' --accountId <userAccountID> --amount 1`
 
 # view total number of donors who have pooled funds
 
@@ -44,7 +44,7 @@ await contract.add_event({
 # Get total amount of funds  pooled by donors on an event via the event_id
 
 `
-near call <contractID> number_of_pool_by_donor '{"event_id": "9c71LoSyIRJI2AdTVn4u"}' --accountId <contractID>
+near call <contractID> number_of_pool_by_donor '{"event_id": "9c71LoSyIRJI2AdTVn4u"}' --accountId <userAccountID>
 `
 
 # View events on the blockchain:
