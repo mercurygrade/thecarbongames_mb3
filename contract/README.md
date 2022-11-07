@@ -41,7 +41,7 @@ await contract.add_event({
 
 `near view <contractID> total_number_of_pool_donors`
 
-# Get total pools on event
+# Get total amount of funds  pooled by donors on an event via the event_id
 
 `
 near call <contractID> number_of_pool_by_donor '{"event_id": "9c71LoSyIRJI2AdTVn4u"}' --accountId <contractID>
