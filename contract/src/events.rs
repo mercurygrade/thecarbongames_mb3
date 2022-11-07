@@ -1,6 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::Serialize;
-use near_sdk::{env, AccountId, Balance, near_bindgen,Promise};
+use near_sdk::{env, AccountId, log, Balance, near_bindgen,Promise};
 use near_sdk::collections::{Vector};
 use near_sdk::json_types::{U128};
 use near_sdk::collections::{UnorderedMap};
@@ -19,22 +19,30 @@ pub struct PostedMessage {
   pub longitude: String
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct PooledFundsLog {
+  pub event_id: String, 
+  pub donor: AccountId,
+  pub payment_amount: u128
+}
+
+
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct Events {
   pub beneficiary: AccountId,
   messages: Vector<PostedMessage>,
-  pub pool_funds: UnorderedMap<AccountId, String>,
-
+  pub pool_funds:  Vector<PooledFundsLog>,
+ 
 }
 
 impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "thecarbongames-events-15.testnet".parse().unwrap(),
-    pool_funds: UnorderedMap::new(b"d"),
-
+    beneficiary: "v12.thecarbongames-events-14.testnet".parse().unwrap(),
+    pool_funds: Vector::new(b"m"),
   }
   }
 }
@@ -44,7 +52,7 @@ impl Events {
   
   #[payable]
   pub fn add_event(&mut self, event_id: String, title: String, description: String, latitude: String, longitude: String) {
-   
+    
     // only attach to blockchain if payment of 1N has been made
     let sender = env::predecessor_account_id();
     let payment_amount: Balance = env::attached_deposit();
@@ -68,7 +76,6 @@ impl Events {
    pub fn pool_funds(&mut self, event_id:String, amount:String)  {
     //this method allows the user to pool fund to an event  
     let donor: AccountId = env::predecessor_account_id(); //account id of pooling
-    let data = [event_id, amount].join("|"); 
     let payment_amount: Balance = env::attached_deposit();
     
     let to_transfer: Balance = if payment_amount == 0 {
@@ -79,20 +86,49 @@ impl Events {
     }else{
       payment_amount
     };
-   
+    
     //send to carbongames
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
     //save to storage
-    self.pool_funds.insert(&donor, &data);
+    let message = PooledFundsLog{event_id, donor, payment_amount};
+    self.pool_funds.push(&message);
    }
-  
-  // Public - get total number of donors who have pooled funds to the events
-  pub fn number_of_pool_by_donor(&self) -> String {
-    let donor = env::predecessor_account_id();
-    let mut donated_so_far = self.pool_funds.get(&donor).unwrap(); //.unwrap_or(0);
-    return donated_so_far;
-    //self.pool_funds.len()
+
+    //list the funds added to an event
+   pub fn list_all_event_funds(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<PooledFundsLog> {
+    self.pool_funds.iter() 
+    .take(limit.unwrap_or(10) as usize)
+    .collect()
+   }
+   
+   
+   pub fn number_of_pool_by_donor(&self, event_id:String) -> u128 {
+      // let mut v =0;
+      let mut v=Vec::new();
+        self.pool_funds.iter()
+           .into_iter()
+          // .filter(|a| a.event_id == event_id)
+           .map(|r| {
+               v.push(r.payment_amount);
+               log!("added {}", r.payment_amount);
+           });
+           //.collect::<Vec<PooledFundsLog>>();
+           let sum: u128 = v.iter().sum();
+           log!("Vector Values {:?}",v);
+          
+           return sum;
   }
+  
+     
+    // Public - get payment by account ID
+    pub fn get_pools_for_event_id(&self, event_id: String, donor:AccountId, payment_amount:u128 ) -> PooledFundsLog {
+      PooledFundsLog {
+        event_id: event_id.clone(),
+        donor:  donor.clone(),
+        payment_amount: payment_amount.clone()
+      }
+    }
+
   
   // Public - get total number of donors who have pooled funds to the events
   pub fn total_number_of_pool_donors(&self) -> u64 {
