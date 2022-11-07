@@ -48,31 +48,27 @@ await contract.add_event({
 Will return an amount in Near (e.g 12 means 12N was donated by users to the event with that id) showing the total
 amount that has been pooled by users to the event.
 
-
-
-
 # List all events pool funds
+
 `near call <contractID> list_all_event_funds '{"from_index": 0, "limit":10}' --accountId <userAccountID>`
 
-Result: 
+Result:
 [
-  {
-    event_id: '9c71LoSyIRJI2AdTVn4u',
-    donor: 'davidoluyale2.testnet',
-    payment_amount: 2e+24
-  },
-  {
-    event_id: '9c71LoSyIRJI2AdTVn4u',
-    donor: 'davidoluyale5.testnet',
-    payment_amount: 2e+24
-  }
+{
+event_id: '9c71LoSyIRJI2AdTVn4u',
+donor: 'davidoluyale2.testnet',
+payment_amount: 2e+24
+},
+{
+event_id: '9c71LoSyIRJI2AdTVn4u',
+donor: 'davidoluyale5.testnet',
+payment_amount: 2e+24
+}
 ]
-
 
 # View all events on the blockchain:
 
 `near call <contractID> get_events '{"from_index": "0", "limit":10}' --accountId <accountID>`
-
 
 # Quickstart
 
