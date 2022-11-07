@@ -41,6 +41,12 @@ await contract.add_event({
 
 `near view <contractID> total_number_of_pool_donors`
 
+# Get total pools on event
+
+`
+near call <contractID> number_of_pool_by_donor '{"event_id": "9c71LoSyIRJI2AdTVn4u"}' --accountId <contractID>
+`
+
 # View events on the blockchain:
 
 `near call <contractID> get_events '{"from_index": "0", "limit":10}' --accountId <accountID>`
