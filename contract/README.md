@@ -53,6 +53,7 @@ amount that has been pooled by users to the event.
 `near call <contractID> list_all_event_funds '{"from_index": 0, "limit":10}' --accountId <userAccountID>`
 
 Result:
+```json
 [
 {
 event_id: '9c71LoSyIRJI2AdTVn4u',
@@ -65,6 +66,7 @@ donor: 'davidoluyale5.testnet',
 payment_amount: 2e+24
 }
 ]
+```
 
 # View all events on the blockchain:
 
