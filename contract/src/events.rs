@@ -17,7 +17,7 @@ pub struct PostedMessage {
   pub description: String,
   pub latitude: String,
   pub longitude: String
-}
+ }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -27,6 +27,16 @@ pub struct PooledFundsLog {
   pub payment_amount: u128
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct Bounty {
+  pub event_id: String, 
+  pub donor: AccountId,
+  pub payment_amount: u128,
+  pub latitude:String,
+  pub longitude:String,
+  pub max_shared:String
+}
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
@@ -34,15 +44,16 @@ pub struct Events {
   pub beneficiary: AccountId,
   messages: Vector<PostedMessage>,
   pub pool_funds:  Vector<PooledFundsLog>,
- 
+  pub bounty:  Vector<Bounty>
 }
 
 impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "v12.thecarbongames-events-14.testnet".parse().unwrap(),
+    beneficiary: "thecarbongames-events-10.testnet".parse().unwrap(),
     pool_funds: Vector::new(b"m"),
+    bounty: Vector::new(b"m")
   }
   }
 }
@@ -93,6 +104,30 @@ impl Events {
     let message = PooledFundsLog{event_id, donor, payment_amount};
     self.pool_funds.push(&message);
    }
+   
+   #[payable]
+   pub fn add_bounty(&mut self, event_id:String, longitude:String, latitude:String, max_shared:String, amount:String)  {
+    //this method allows the user to pool fund to an event  
+    let donor: AccountId = env::predecessor_account_id(); //account id of pooling
+    let payment_amount: Balance = env::attached_deposit();
+    
+    let to_transfer: Balance = if payment_amount == 0 {
+      // This is the user's first payment, lets register it, which increases storage
+      assert!(payment_amount > STORAGE_COST, "Attach a deposit");
+      // Subtract the storage cost to the amount to transfer
+      payment_amount - STORAGE_COST
+    }else{
+      payment_amount
+    };
+    
+    //send to carbongames
+    Promise::new(self.beneficiary.clone()).transfer(to_transfer);
+    //save to storage
+    let bounties = Bounty{event_id, donor, payment_amount,longitude, latitude, max_shared};
+    self.bounty.push(&bounties);
+   }
+
+
 
     //list the funds added to an event
    pub fn list_all_event_funds(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<PooledFundsLog> {

@@ -37,6 +37,10 @@ await contract.add_event({
 
 `near call <contractID> pool_funds '{"event_id": "snsns","amount":"1"}' --accountId <userAccountID> --amount 1`
 
+# Add Bounty to an event
+
+` near call <contractID> add_bounty '{"event_id": "9c71LoSyIRJI2AdTVn4u","longitude":"0.12323","latitude":"6.33343","max_shared":"3","amount":"1"}' --accountId <userAccountID> --amount 1`
+
 # view total number of donors who have pooled funds
 
 `near view <contractID> total_number_of_pool_donors`
@@ -56,18 +60,17 @@ Result:
 
 ```json
 [
-{
-"event_id": "9c71LoSyIRJI2AdTVn4u",
-"donor": "davidoluyale2.testnet",
-"payment_amount": 2e+24
-},
-{
-"event_id": "9c71LoSyIRJI2AdTVn4u",
-"donor": "davidoluyale5.testnet",
-"payment_amount": 2e+24
-}
+  {
+    "event_id": "9c71LoSyIRJI2AdTVn4u",
+    "donor": "davidoluyale2.testnet",
+    "payment_amount": 2e24
+  },
+  {
+    "event_id": "9c71LoSyIRJI2AdTVn4u",
+    "donor": "davidoluyale5.testnet",
+    "payment_amount": 2e24
+  }
 ]
-
 ```
 
 # View all events on the blockchain:
