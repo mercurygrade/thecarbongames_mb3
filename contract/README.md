@@ -41,6 +41,10 @@ await contract.add_event({
 
 ` near call <contractID> add_bounty '{"event_id": "9c71LoSyIRJI2AdTVn4u","longitude":"0.12323","latitude":"6.33343","max_shared":"3","amount":"1"}' --accountId <userAccountID> --amount 1`
 
+# Add Bounty Claimant
+
+` near call <contractID> add_bounty_claim '{"event_id": "9c71LoSyIRJI2AdTVn4u","longitude":"0.12323","latitude":"6.33343","end_date":"20-11-2022"}' --accountId <userAccountID>`
+
 # view total number of donors who have pooled funds
 
 `near view <contractID> total_number_of_pool_donors`
@@ -72,6 +76,10 @@ Result:
   }
 ]
 ```
+
+# List all bounties
+
+`near call <contractID> list_all_bounties '{"from_index": 0, "limit":10}' --accountId <userAccountID>`
 
 # View all events on the blockchain:
 

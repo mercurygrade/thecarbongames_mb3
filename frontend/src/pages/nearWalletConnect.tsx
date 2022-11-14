@@ -32,4 +32,3 @@ const NearWalletConnect = () => {
   );
 };
 export default NearWalletConnect;
-

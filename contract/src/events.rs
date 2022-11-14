@@ -19,6 +19,16 @@ pub struct PostedMessage {
   pub longitude: String
  }
 
+ #[derive(BorshDeserialize, BorshSerialize, Serialize)]
+ #[serde(crate = "near_sdk::serde")]
+ pub struct EventData {
+  pub event_id: String,
+  pub longitude: String,
+  pub latitude: String,
+  pub max_shared: String,
+  pub amount: String
+  }
+
 #[derive(BorshDeserialize, BorshSerialize, Serialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct PooledFundsLog {
@@ -29,13 +39,20 @@ pub struct PooledFundsLog {
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize)]
 #[serde(crate = "near_sdk::serde")]
-pub struct Bounty {
+pub struct BountyClaim {
   pub event_id: String, 
+  pub longitude: String,
+  pub latitude: String,
+  pub end_date: String,
+  pub claimant: AccountId
+}
+
+#[derive(BorshDeserialize, BorshSerialize, Serialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct Bounty {
+  pub event_id: String,
   pub donor: AccountId,
-  pub payment_amount: u128,
-  pub latitude:String,
-  pub longitude:String,
-  pub max_shared:String
+  pub payment_amount: u128
 }
 
 #[near_bindgen]
@@ -43,17 +60,23 @@ pub struct Bounty {
 pub struct Events {
   pub beneficiary: AccountId,
   messages: Vector<PostedMessage>,
-  pub pool_funds:  Vector<PooledFundsLog>,
-  pub bounty:  Vector<Bounty>
+  pub pool_funds: Vector<PooledFundsLog>,
+  pub bounty: Vector<Bounty>,
+  pub event_data: Vector<EventData>,
+  pub bounty_claim: Vector<BountyClaim>
 }
 
 impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "thecarbongames-events-10.testnet".parse().unwrap(),
+    beneficiary: "tcgevent.testnet".parse().unwrap(),
     pool_funds: Vector::new(b"m"),
-    bounty: Vector::new(b"m")
+    bounty: Vector::new(b"m"),
+    event_data: Vector::new(b"m"),
+    bounty_claim: Vector::new(b"m"),
+
+
   }
   }
 }
@@ -106,36 +129,58 @@ impl Events {
    }
    
    #[payable]
-   pub fn add_bounty(&mut self, event_id:String, longitude:String, latitude:String, max_shared:String, amount:String)  {
-    //this method allows the user to pool fund to an event  
+    pub fn add_bounty(&mut self, event_id:String)
+    {
+     //this method allows the user to pool fund to an event  
     let donor: AccountId = env::predecessor_account_id(); //account id of pooling
     let payment_amount: Balance = env::attached_deposit();
-    
     let to_transfer: Balance = if payment_amount == 0 {
       // This is the user's first payment, lets register it, which increases storage
       assert!(payment_amount > STORAGE_COST, "Attach a deposit");
       // Subtract the storage cost to the amount to transfer
       payment_amount - STORAGE_COST
-    }else{
+    }
+    else{
       payment_amount
     };
+    //log!("*******************#######Event Data::: event_data", event_data);
     
     //send to carbongames
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
     //save to storage
-    let bounties = Bounty{event_id, donor, payment_amount,longitude, latitude, max_shared};
+    let bounties = Bounty{event_id, donor, payment_amount};
     self.bounty.push(&bounties);
+   } 
+
+  
+   pub fn add_bounty_claim(&mut self, event_id:String, longitude:String, latitude:String, end_date:String)  {
+    //this method allows the user to pool fund to an event  
+    let claimant: AccountId = env::predecessor_account_id(); //account id of pooling
+    //save to storage
+    let message = BountyClaim{event_id, longitude, latitude,end_date,claimant};
+    self.bounty_claim.push(&message);
    }
-
-
-
-    //list the funds added to an event
+   
+   //list the funds added to an event
+    pub fn list_all_added_bounty_claim(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<BountyClaim> {
+      self.bounty_claim.iter() 
+      .take(limit.unwrap_or(10) as usize)
+      .collect()
+   }
+  
+   //list the funds added to an event
    pub fn list_all_event_funds(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<PooledFundsLog> {
     self.pool_funds.iter() 
     .take(limit.unwrap_or(10) as usize)
     .collect()
    }
-   
+  
+  //list the bounties
+     pub fn list_all_bounties(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<Bounty> {
+      self.bounty.iter() 
+      .take(limit.unwrap_or(10) as usize)
+      .collect()
+     }
    
    pub fn number_of_pool_by_donor(&self, event_id:String) -> u128 {
       // let mut v =0;
@@ -153,8 +198,7 @@ impl Events {
           
            return sum;
   }
-  
-     
+
     // Public - get payment by account ID
     pub fn get_pools_for_event_id(&self, event_id: String, donor:AccountId, payment_amount:u128 ) -> PooledFundsLog {
       PooledFundsLog {
@@ -164,12 +208,12 @@ impl Events {
       }
     }
 
-  
   // Public - get total number of donors who have pooled funds to the events
   pub fn total_number_of_pool_donors(&self) -> u64 {
     self.pool_funds.len()
   }
-  
+
+
   /* pub fn get_events(&self, from_index:Option<U128>, limit:Option<u64>) -> Vector<PostedMessage>{
    let from = u128::from(from_index.unwrap_or(U128(0)));
     self.messages.iter()
