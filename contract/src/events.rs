@@ -128,6 +128,7 @@ impl Events {
     self.pool_funds.push(&message);
    }
    
+   
    #[payable]
     pub fn add_bounty(&mut self, event_id:String)
     {
@@ -139,7 +140,7 @@ impl Events {
       assert!(payment_amount > STORAGE_COST, "Attach a deposit");
       // Subtract the storage cost to the amount to transfer
       payment_amount - STORAGE_COST
-    }
+    } 
     else{
       payment_amount
     };
@@ -167,7 +168,7 @@ impl Events {
       .take(limit.unwrap_or(10) as usize)
       .collect()
    }
-  
+   
    //list the funds added to an event
    pub fn list_all_event_funds(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<PooledFundsLog> {
     self.pool_funds.iter() 
@@ -195,7 +196,7 @@ impl Events {
            //.collect::<Vec<PooledFundsLog>>();
            let sum: u128 = v.iter().sum();
            log!("Vector Values {:?}",v);
-          
+           
            return sum;
   }
 
