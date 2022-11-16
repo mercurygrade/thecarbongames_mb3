@@ -1,6 +1,5 @@
 import * as nearAPI from "near-api-js";
-
-const { connect, keyStores, WalletConnection } = nearAPI;
+const { keyStores } = nearAPI;
 
 export const connectionConfig: any = {
   networkId: "testnet",
@@ -11,4 +10,5 @@ export const connectionConfig: any = {
   explorerUrl: "https://explorer.testnet.near.org",
 };
 
-export const paymentContractName = "thecarbongames2.testnet";
+export const ContractName = "v7.tcgevent.testnet";
+export const BaseWebAppURL ="https://thecarbongames.web.app";

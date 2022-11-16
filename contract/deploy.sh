@@ -4,4 +4,4 @@
 
 echo ">> Deploying contract"
 
-near deploy --accountId v6.tcgevent.testnet  --wasmFile ./target/wasm32-unknown-unknown/release/contract.wasm
+near deploy --accountId v7.tcgevent.testnet  --wasmFile ./target/wasm32-unknown-unknown/release/contract.wasm

@@ -1,6 +1,6 @@
 import * as nearAPI from "near-api-js";
 import { useEffect, useState } from "react";
-import { connectionConfig, paymentContractName } from "config/config";
+import { connectionConfig, ContractName,BaseWebAppURL } from "config/config";
 import ClipLoader from "react-spinners/ClipLoader";
 const UpgradeAccountSuccess = (props: any) => {
   const search = window.location.search;
@@ -21,7 +21,7 @@ const UpgradeAccountSuccess = (props: any) => {
       );
       const contract = new Contract(
         walletConnection.account(),
-        paymentContractName,
+        ContractName,
         {
           viewMethods: ["get_payments"],
           changeMethods: ["payment"],
@@ -36,7 +36,7 @@ const UpgradeAccountSuccess = (props: any) => {
       const rounded_two_decimals = Math.round(amount_in_near);
       //@ts-ignore
       await contract.payment({
-        callbackUrl: "https://thecarbongames.web.app/upgrade-completed", // callbackUrl after the transaction approved (optional)
+        callbackUrl: `${BaseWebAppURL}/upgrade-completed`, // callbackUrl after the transaction approved (optional)
         meta: `userWallet=${walletConnection.getAccountId()}|${plan_type}|${rounded_two_decimals}|${redirect}`, // meta information NEAR Wallet will send back to the application. `meta` will be attached to the `callbackUrl` as a url param
         args: {},
         gas: 300000000000000, // attached GAS (optional)

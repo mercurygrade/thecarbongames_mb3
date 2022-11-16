@@ -75,8 +75,6 @@ impl Default for Events{
     bounty: Vector::new(b"m"),
     event_data: Vector::new(b"m"),
     bounty_claim: Vector::new(b"m"),
-
-
   }
   }
 }
@@ -153,7 +151,7 @@ impl Events {
     self.bounty.push(&bounties);
    } 
 
-  
+   
    pub fn add_bounty_claim(&mut self, event_id:String, longitude:String, latitude:String, end_date:String)  {
     //this method allows the user to pool fund to an event  
     let claimant: AccountId = env::predecessor_account_id(); //account id of pooling
@@ -161,7 +159,7 @@ impl Events {
     let message = BountyClaim{event_id, longitude, latitude,end_date,claimant};
     self.bounty_claim.push(&message);
    }
-   
+  
    //list the funds added to an event
     pub fn list_all_added_bounty_claim(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<BountyClaim> {
       self.bounty_claim.iter() 

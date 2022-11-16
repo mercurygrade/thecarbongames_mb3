@@ -5,6 +5,11 @@ import FailurePage from "pages/failurePage";
 import UpgradeAccountSuccess from "pages/upgradeAccountSuccess";
 import UpgradeAccount from "pages/upgradeAccount";
 import UpgradeAccountCompleted from "pages/upgradeAccountCompleted";
+
+import ClaimBounty from "pages/claimBounty";
+import ClaimBountySuccess from "pages/claimBountySuccess";
+import ClaimBountyCompleted from "pages/ClaimBountyCompleted";
+
 const Router = () => {
   return (
     <Routes>
@@ -18,6 +23,10 @@ const Router = () => {
         element={<UpgradeAccountSuccess />}
       />
       <Route path="/upgrade-completed" element={<UpgradeAccountCompleted />} />
+      <Route path="/claim-bounty" element={<ClaimBounty />} />
+      <Route path="/claim-bounty-success" element={<ClaimBountySuccess />} />
+      <Route path="/claim-bounty-success" element={<ClaimBountyCompleted />} />
+
     </Routes>
   );
 };
