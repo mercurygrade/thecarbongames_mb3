@@ -33,6 +33,7 @@ const UpgradeAccountCompleted = (props: any) => {
     let getWallet = parsequery?.split("|")[0];
     let getPlanType = parsequery?.split("|")[1];
     let redirect = parsequery?.split("|")[3];
+
     try {
       const q = query(
         collection(db, "users"),
@@ -40,15 +41,25 @@ const UpgradeAccountCompleted = (props: any) => {
       );
       const querySnapshot = await getDocs(q);
       let docID = "";
+      let selectPlanTypeObj = "";
+
       querySnapshot.forEach((doc) => {
         docID = doc.id;
+        //@ts-ignore
+        selectPlanTypeObj = doc.data().plan_type;
       });
+      //@ts-ignore
+      selectPlanTypeObj.push(getPlanType);
+      console.log("::::::", selectPlanTypeObj);
+
       const user = doc(db, "users", docID);
       await updateDoc(user, {
-        plan_type: [`${getPlanType}`],
+        plan_type: selectPlanTypeObj,
         selected_plan_type: `${getPlanType}`,
       });
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <>

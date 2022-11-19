@@ -26,7 +26,6 @@ const Router = () => {
       <Route path="/claim-bounty" element={<ClaimBounty />} />
       <Route path="/claim-bounty-success" element={<ClaimBountySuccess />} />
       <Route path="/claim-bounty-success" element={<ClaimBountyCompleted />} />
-
     </Routes>
   );
 };

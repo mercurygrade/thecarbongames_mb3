@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { BaseWebAppURL } from "config/config";
-import {NEARLogin} from "utils"
+import { NEARLogin } from "utils";
 
 const UpgradeAccount = () => {
   const search = window.location.search;
@@ -22,9 +22,8 @@ const UpgradeAccount = () => {
       priceUSD = 90;
     } else {
     }
-    let redirecturl =  `${BaseWebAppURL}/upgrade-account-success?plan_type=${plan_type}&priceUSD=${priceUSD}&redirect=${redirect}`;
-    NEARLogin("The Carbongames Account Upgrade",redirecturl);
-   
+    let redirecturl = `${BaseWebAppURL}/upgrade-account-success?plan_type=${plan_type}&priceUSD=${priceUSD}&redirect=${redirect}`;
+    NEARLogin("The Carbongames Account Upgrade", redirecturl);
   };
   return (
     <div className="text-center">

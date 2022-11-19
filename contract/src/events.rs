@@ -70,7 +70,7 @@ impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "tcgevent.testnet".parse().unwrap(),
+    beneficiary: "tcg-contracts.testnet".parse().unwrap(),
     pool_funds: Vector::new(b"m"),
     bounty: Vector::new(b"m"),
     event_data: Vector::new(b"m"),
@@ -97,7 +97,7 @@ impl Events {
     }else{
       payment_amount
     };
-
+    
     Promise::new(self.beneficiary.clone()).transfer(to_transfer);
     let message = PostedMessage{sender, event_id, title, description, latitude, longitude };
     self.messages.push(&message);

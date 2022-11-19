@@ -1,6 +1,6 @@
 import * as nearAPI from "near-api-js";
 import { useEffect, useState } from "react";
-import { connectionConfig, ContractName,BaseWebAppURL } from "config/config";
+import { connectionConfig, ContractName, BaseWebAppURL } from "config/config";
 import ClipLoader from "react-spinners/ClipLoader";
 const UpgradeAccountSuccess = (props: any) => {
   const search = window.location.search;
@@ -19,14 +19,10 @@ const UpgradeAccountSuccess = (props: any) => {
       const account = await nearConnection.account(
         walletConnection.getAccountId()
       );
-      const contract = new Contract(
-        walletConnection.account(),
-        ContractName,
-        {
-          viewMethods: ["get_payments"],
-          changeMethods: ["payment"],
-        }
-      );
+      const contract = new Contract(walletConnection.account(), ContractName, {
+        viewMethods: ["get_payments"],
+        changeMethods: ["payment"],
+      });
       //get current rate
       let data = await fetch(
         "https://api.coingecko.com/api/v3/simple/price?ids=near&vs_currencies=usd"

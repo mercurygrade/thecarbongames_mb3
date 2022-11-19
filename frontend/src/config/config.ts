@@ -10,5 +10,5 @@ export const connectionConfig: any = {
   explorerUrl: "https://explorer.testnet.near.org",
 };
 
-export const ContractName = "v7.tcgevent.testnet";
-export const BaseWebAppURL ="https://thecarbongames.web.app";
+export const ContractName = "tcg-contracts.testnet";
+export const BaseWebAppURL = "https://thecarbongames.web.app";
