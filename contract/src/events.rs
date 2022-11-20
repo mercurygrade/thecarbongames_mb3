@@ -70,7 +70,7 @@ impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "tcg-contracts.testnet".parse().unwrap(),
+    beneficiary: "carbongames.testnet".parse().unwrap(),
     pool_funds: Vector::new(b"m"),
     bounty: Vector::new(b"m"),
     event_data: Vector::new(b"m"),
