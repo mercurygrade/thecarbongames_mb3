@@ -125,6 +125,7 @@ impl Events {
     let message = PooledFundsLog{event_id, donor, payment_amount};
     self.pool_funds.push(&message);
    }
+
    
    
    #[payable]
@@ -151,7 +152,7 @@ impl Events {
     self.bounty.push(&bounties);
    } 
 
-   
+    
    pub fn add_bounty_claim(&mut self, event_id:String, longitude:String, latitude:String, end_date:String)  {
     //this method allows the user to pool fund to an event  
     let claimant: AccountId = env::predecessor_account_id(); //account id of pooling
@@ -159,7 +160,12 @@ impl Events {
     let message = BountyClaim{event_id, longitude, latitude,end_date,claimant};
     self.bounty_claim.push(&message);
    }
-  
+   pub fn disburseFunds(){
+     let account_ids = list_all_added_bounty_claim();
+     let amount = 0;
+    Promise::new(account_ids[0]).transfer(amount); //test this.
+   }
+   
    //list the funds added to an event
     pub fn list_all_added_bounty_claim(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<BountyClaim> {
       self.bounty_claim.iter() 
@@ -173,7 +179,7 @@ impl Events {
     .take(limit.unwrap_or(10) as usize)
     .collect()
    }
-  
+   
   //list the bounties
      pub fn list_all_bounties(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<Bounty> {
       self.bounty.iter() 
