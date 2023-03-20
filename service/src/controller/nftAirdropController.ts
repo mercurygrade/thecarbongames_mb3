@@ -19,7 +19,8 @@ const airdropUser = async (user_wallet, event_type, res) => {
     nftPrefix = "nft-present-";
   } else if (event_type === "pool_completed") {
     nftPrefix = "nft-future-";
-  } else {
+  }
+  else {
     nftPrefix = "nft-";
   }
   let fileTracker = path.join(

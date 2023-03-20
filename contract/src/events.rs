@@ -70,7 +70,7 @@ impl Default for Events{
   fn default() -> Self {
     Self{
     messages: Vector::new(b"m"),
-    beneficiary: "carbongames.testnet".parse().unwrap(),
+    beneficiary: "carbongames2.testnet".parse().unwrap(),
     pool_funds: Vector::new(b"m"),
     bounty: Vector::new(b"m"),
     event_data: Vector::new(b"m"),
@@ -160,12 +160,7 @@ impl Events {
     let message = BountyClaim{event_id, longitude, latitude,end_date,claimant};
     self.bounty_claim.push(&message);
    }
-   pub fn disburseFunds(){
-     let account_ids = list_all_added_bounty_claim();
-     let amount = 0;
-    Promise::new(account_ids[0]).transfer(amount); //test this.
-   }
-   
+  
    //list the funds added to an event
     pub fn list_all_added_bounty_claim(&self, from_index:Option<U128>, limit:Option<u64>) -> Vec<BountyClaim> {
       self.bounty_claim.iter() 

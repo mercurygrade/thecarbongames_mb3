@@ -16,5 +16,5 @@ nearWalletRoute.post("/transaction-status", getTransactionStatus);
 nearWalletRoute.post("/transaction-details", getTransactionDetails);
 nearWalletRoute.post("/batch-transactions", batchTransactions);
 nearWalletRoute.post("/list-nfts", listNFTs);
-
+ 
 module.exports = nearWalletRoute;

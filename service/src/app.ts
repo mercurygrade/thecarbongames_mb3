@@ -1,4 +1,7 @@
 import express from "express";
+const cron = require("node-cron");
+const request = require('request');
+
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
@@ -19,6 +22,18 @@ app.use("/carbon", jsonParser, carbonTokenRoute);
 app.use("/near", jsonParser, nearWalletRoute);
 app.use("/airdrop", jsonParser, nftAirdropRoute);
 app.use("/dashboard", jsonParser, dashboardRoute);
+
+//run once daily
+cron.schedule("0 0 0 * * *", async function () {
+ 
+  request('http://159.89.100.186:9067/dashboard/disburse-funds', { json: true }, (err, res, body) => {
+  if (err) { return console.log(err); }
+  console.log(body);
+ });
+
+});
+
+
 
 app.listen(9067, () => {
   console.log("carbon app is listening");

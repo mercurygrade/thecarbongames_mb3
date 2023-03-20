@@ -17,7 +17,7 @@ pub struct Contract {
 impl Default for Contract {
   fn default() -> Self {
     Self{
-      beneficiary: "carbongames.testnet".parse().unwrap(),
+      beneficiary: "carbongames2.testnet".parse().unwrap(),
       payments: UnorderedMap::new(b"d"),
     }
   }

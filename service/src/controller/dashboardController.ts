@@ -1,10 +1,12 @@
 const { exec } = require("child_process");
+
+
 const {
   getFirestore,
   Timestamp,
   FieldValue,
 } = require("firebase-admin/firestore");
-const { connect, KeyPair, utils, providers, Contract } = require("near-api-js");
+const { connect, KeyPair, utils, providers, Contract ,keyStores} = require("near-api-js");
 import {
   keyStore,
   config,
@@ -14,6 +16,16 @@ import {
 const admin = require("firebase-admin");
 const db = getFirestore();
 require("dotenv").config();
+
+// creates a keyStore that searches for keys in .near-credentials
+// requires credentials stored locally by using a NEAR-CLI command: `near login` 
+// https://docs.near.org/tools/cli#near-login
+
+const homedir = require("os").homedir();
+const CREDENTIALS_DIR = ".near-credentials";
+const credentialsPath = require("path").join(homedir, CREDENTIALS_DIR);
+const myKeyStore = new keyStores.UnencryptedFileSystemKeyStore(credentialsPath);
+
 export const loginCustomToken = async (req, res) => {
   try {
     let near_wallet = req.body.near_wallet;
@@ -111,3 +123,54 @@ export const addEvent = async (req, res) => {
     }
   );
 };
+
+export const disburseFunds = async (req, res) => {
+  
+  const connectionConfig = {
+    networkId: "testnet",
+    keyStore: myKeyStore, // first create a key store 
+    nodeUrl: "https://rpc.testnet.near.org",
+    walletUrl: "https://wallet.testnet.near.org",
+    helperUrl: "https://helper.testnet.near.org",
+    explorerUrl: "https://explorer.testnet.near.org",
+  };
+  const nearConnection = await connect(connectionConfig);
+  const account = await nearConnection.account(process.env.BOUNTRY_CONTRACT_NAME);
+ 
+  const contract = new Contract(
+    account, // the account object that is connecting
+    process.env.BOUNTRY_CONTRACT_NAME,
+    {
+      // name of contract you're connecting to
+      viewMethods: ["list_all_bounties","list_all_added_bounty_claim"], // view methods do not change state but usually return a value
+      changeMethods: ["add_bounty"], // change methods modify state
+    }
+  );
+  //const responseAllBounties = await contract.list_all_bounties(); --Testnet throwing much error.
+  //get amount from the events 
+  const responseAllClaims = await contract.list_all_added_bounty_claim();
+  
+  let wallets = [];
+  let event_ids =[];
+  //split among wallet N1 for now. 
+  responseAllClaims.map((item, index)=>{
+      wallets.push(item.claimant) //wallets to recieve funds
+      event_ids.push(item.event_id)// 
+      //send 1N to the wallet -- this should change to bounties list later
+       account.sendMoney(
+        item.claimant, // receiver account
+        "1000000000000000000000000" // amount in yoctoNEAR
+      );
+  })
+  res.json({
+    status: "success",
+    message:"disbursement has been sent to the qualified wallet addresses",
+    data: responseAllClaims,
+    error: null,
+  });
+ 
+
+  //update event disbursed status 
+  //TODO:: Mike add disbursed column to firebase
+
+}
