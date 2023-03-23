@@ -1,4 +1,4 @@
-const CONTRACT_NAME = "parisblockchain3.testnet";
+const CONTRACT_NAME = "parisblockchain5.testnet";
 
 function getConfig(env) {
   switch (env) {

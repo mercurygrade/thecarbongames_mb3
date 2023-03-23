@@ -75,8 +75,8 @@ impl Contract {
             owner_id,
             NFTContractMetadata {
                 spec: "nft-1.0.0".to_string(),
-                name: "Mid journey carbongames".to_string(),
-                symbol: "GOTEAM".to_string(),
+                name: "Carbon Games".to_string(),
+                symbol: "C02".to_string(),
                 icon: None,
                 base_uri: None,
                 reference: None,

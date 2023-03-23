@@ -21,6 +21,7 @@ const { networkId } = getConfig(process.env.NODE_ENV || "development");
 export default function App() {
   const [userHasNFT, setuserHasNFT] = useState(false);
 
+  /*
   useEffect(() => {
     const receivedNFT = async () => {
       console.log(
@@ -43,7 +44,7 @@ export default function App() {
       }
     };
     receivedNFT();
-  }, []);
+  }, []);*/
 
   return (
     <React.Fragment>
