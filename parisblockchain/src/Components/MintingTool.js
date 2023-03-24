@@ -75,6 +75,9 @@ const MintingTool = (props) => {
     let title = null;
     let IpfsHash = null; 
 
+    let country_code = null;
+    let number = null;
+
     try {
 
       const nftDetails = query(
@@ -93,7 +96,10 @@ const MintingTool = (props) => {
            minted_status = nftDetailsObj.minted_status;
            pool_id = nftDetailsObj.pool_id;
            IpfsHash = nftDetailsObj.IpfsHash;
+           country_code = nftDetailsObj.country_code;
+           number = nftDetailsObj.number;
            title = nftDetailsObj.title;
+
 
         }
       
@@ -104,8 +110,7 @@ const MintingTool = (props) => {
       await updateDoc(mints_db, {
         minted_status: 'completed',
       });
-
-
+    
     } catch (err) {
       console.log(err);
     }
@@ -116,7 +121,7 @@ const MintingTool = (props) => {
      //update this details from firebase
     await window.contract.nft_mint(
       {
-        token_id: `${window.accountId}-${mint_id}go-team-token`,
+        token_id: `${country_code}${number}`,   //`${window.accountId}-${mint_id}go-team-token`,
         metadata: {
           title: title,
           description: metadata_description,
