@@ -24,7 +24,7 @@ const contract = new Contract(walletConnection.account(), ContractName, {
 });
 
 //interact with the event smart contract
-await contract.nft_tokens(from_index, limit);
+await contract.nft_tokens({ from_index: 0, limit: 40 });
 ```
 
 //the above will list all minted nfts to the marketplace.
