@@ -19,7 +19,7 @@ Before you compile this code, you will need to install Rust with [correct target
 ```js
 let walletConnection = new WalletConnection(nearConnection, null);
 const account = await nearConnection.account(walletConnection.getAccountId());
-const contract = new Contract(walletConnection.account(), paymentContractName, {
+const contract = new Contract(walletConnection.account(), ContractName, {
   viewMethods: ["nft_tokens"],
 });
 ```
