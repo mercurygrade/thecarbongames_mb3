@@ -115,8 +115,9 @@ const MintingTool = (props) => {
       console.log(err);
     }
 
-
+      
      //await window.contract.new_default_meta({owner_id: window.accountId})
+    
     
      //update this details from firebase
     await window.contract.nft_mint(
