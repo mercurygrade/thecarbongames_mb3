@@ -22,10 +22,10 @@ const account = await nearConnection.account(walletConnection.getAccountId());
 const contract = new Contract(walletConnection.account(), ContractName, {
   viewMethods: ["nft_tokens"],
 });
-```
 
 //interact with the event smart contract
 await contract.nft_tokens(from_index, limit);
+```
 
 //the above will list all minted nfts to the marketplace.
 
