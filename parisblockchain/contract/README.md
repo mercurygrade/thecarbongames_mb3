@@ -16,11 +16,13 @@ Before you compile this code, you will need to install Rust with [correct target
 
 # Contract Interaction snippet : List NFT
 
+```js
 let walletConnection = new WalletConnection(nearConnection, null);
 const account = await nearConnection.account(walletConnection.getAccountId());
 const contract = new Contract(walletConnection.account(), paymentContractName, {
-viewMethods: ["nft_tokens"]
+  viewMethods: ["nft_tokens"],
 });
+```
 
 //interact with the event smart contract
 await contract.nft_tokens(from_index, limit);
