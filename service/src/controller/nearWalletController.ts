@@ -143,7 +143,7 @@ export const getWalletDetails = async (req, res) => {
 export const listNFTs = async (req, res) => {
   let user_wallet = req.body.user_wallet; //user's near wallet
   exec(
-    `near view ${process.env.NFT1_OWNER_ID} nft_tokens_for_owner '{"account_id": "${user_wallet}"}'`,
+    `near view ${process.env.NFT_UPDATED_CONTRACT_NAME} nft_tokens_for_owner '{"account_id": "${user_wallet}"}'`,
     (err, stdout, stderr) => {
       if (err) {
         console.log(err);
@@ -153,7 +153,7 @@ export const listNFTs = async (req, res) => {
         let cleanResponse = stdout
           .replace(/\n/g, "")
           .replace(
-            `View call: parisblockchain5.testnet.nft_tokens_for_owner({\"account_id\": \"${user_wallet}\"})`,
+            `View call: carbongamesnft.testnet.nft_tokens_for_owner({\"account_id\": \"${user_wallet}\"})`,
             ""
           )
           .replace("[", "")
