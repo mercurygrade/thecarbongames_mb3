@@ -23,6 +23,8 @@ app.use("/near", jsonParser, nearWalletRoute);
 app.use("/airdrop", jsonParser, nftAirdropRoute);
 app.use("/dashboard", jsonParser, dashboardRoute);
 
+
+/*
 //run once daily
 cron.schedule("0 0 0 * * *", async function () {
  
@@ -32,6 +34,7 @@ cron.schedule("0 0 0 * * *", async function () {
  });
 
 });
+*/
 
 
 
