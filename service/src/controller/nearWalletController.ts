@@ -220,3 +220,41 @@ async function NearAccountFunc(
     return null;
   }
 }
+
+
+export const listNFTsMarket = async (req, res) => {
+  let from_index = req.body.from;
+  let limit = req.body.limit;
+  exec(
+    `near view carbongamesnft.testnet nft_tokens '{"from_index": "${from_index}", "limit":${limit}}'`,
+    (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      if (!stderr) {
+        let cleanResponse = stdout
+          .replace(/\n/g, "")
+          .replace(
+            `View call: carbongamesnft.testnet.nft_tokens({\"from_index\": \"${from_index}\", \"limit\":${limit}})`,
+            ""
+         )
+          .replace("[", "")
+          .replace("]", "")
+          .split("\n")
+          .toString();
+        res.json({
+          status: "success",
+          data: cleanResponse,
+          error: null,
+        });
+      } else {
+        res.send({
+          status: "failed",
+          data: null,
+          error: stderr,
+        });
+      }
+    }
+  );
+};

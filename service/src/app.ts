@@ -9,6 +9,7 @@ const carbonTokenRoute = require("./routes/carbonTokenRoute");
 const nearWalletRoute = require("./routes/nearWalletRoute");
 const nftAirdropRoute = require("./routes/nftAirdropRoute");
 const dashboardRoute = require("./routes/dashboardRoute");
+const liveStreamRoute = require("./routes/liveStreamRoute"); 
 
 const jsonParser = bodyParser.json();
 app.use(cors());
@@ -22,7 +23,7 @@ app.use("/carbon", jsonParser, carbonTokenRoute);
 app.use("/near", jsonParser, nearWalletRoute);
 app.use("/airdrop", jsonParser, nftAirdropRoute);
 app.use("/dashboard", jsonParser, dashboardRoute);
-
+app.use("/livestream", jsonParser, liveStreamRoute); 
 
 /*
 //run once daily
