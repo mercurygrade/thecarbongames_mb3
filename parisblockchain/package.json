@@ -41,9 +41,10 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.1.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.9.0",
+    "react-router-dom": "^6.11.1",
     "react-spinners": "^0.13.8",
-    "regenerator-runtime": "~0.13.5"
+    "regenerator-runtime": "~0.13.5",
+    "routes": "^2.1.0"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"

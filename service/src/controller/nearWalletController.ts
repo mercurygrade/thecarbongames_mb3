@@ -256,21 +256,29 @@ export const listNFTsMarket = async (req, res) => {
       for (let i = 0; i < nftTokens.length; i++) {
           const { token_id } = nftTokens[i]
           console.log("token_id", token_id)
-    
+
           let saleToken = saleTokens.find(({ token_id: t }) => t === token_id);
-    
           if (saleToken !== undefined) {
             sales[i] = Object.assign(nftTokens[i], saleToken)
           }
         }
-  
+     const filteredSales = sales.filter(function(x) { return x !== null }); 
+        
       res.json({
         status: "success",
-        data: sales,
+        data: filteredSales,
         error: null,
       });
   
 
+};
+
+const removeEmpty = (obj) => {
+  Object.keys(obj).forEach(k =>
+    (obj[k] && typeof obj[k] === 'object') && removeEmpty(obj[k]) ||
+    (!obj[k] && obj[k] !== undefined) && delete obj[k]
+  );
+  return obj;
 };
 
 export const approveNFTForSale = async (req, res) => {

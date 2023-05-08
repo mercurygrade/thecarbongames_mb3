@@ -17,6 +17,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import { async } from "@firebase/util";
 
 const BN = require("bn.js");
 
@@ -41,23 +42,26 @@ const MintingTool = (props) => {
    const mint_id = params.get("mint_id");
    const [country_code, setCountryCode] = useState("");
    const [number, setNumber] = useState("");
-   const [counter, setCounter] = useState(0);
+   const [showLoading, setShowLoading] = useState(true);
 
   useEffect(()=>{
     //login in user if not logged in.
      //logout();
+      setups();
+    },[1])
 
-     localStorage.removeItem('counter');
-     setTimeout(()=>{
+
+  const setups = async () =>{
+     setTimeout( async ()=>{
       let hasTransactionHashes = document.URL.indexOf("transactionHashes") !== -1;
-      const counter_value =  localStorage.getItem('counter');
-  
+      const counter_value =  await localStorage.getItem('counter');
+      // alert(counter_value);
       if(counter_value == 1){
         //window.location="/success-page";
       setSuccessMessage("You will be redirected for pre-approval of your minted nft in few seconds....");
       setNFTApproval();
       }
-      else if(counter_value == 0 || counter_value == null ){
+      else if(counter_value == null || counter_value == "null"  ){
             if(  window.walletConnection.isSignedIn() ){
               //move to mint. 
               mintNFT();
@@ -67,28 +71,26 @@ const MintingTool = (props) => {
               login();
             }
       }
+      else if(counter_value == 2){
+        await localStorage.setItem('counter', 3);
+        setSuccessMessage("Processing NFT Pre Approval... Please wait");
+        preApproval();
+      }
+      else if(counter_value == 3){
+        await localStorage.setItem('counter', null);
+        setSuccessMessage("Congratulations! Your NFT has been minted successfully");
+        setShowLoading(false);
+      }
       else{
   
       }
 
      }, 3000)
-    
-    },[1])
-
+  }
 
   const setNFTApproval = async () => {
-    await localStorage.setItem("counter",2);
-
-       const getToken_id_value = await localStorage.getItem('token_id_value');
-    
-        //set Approval 
-        const contract = new Contract(
-          window.walletConnection.account(), // the account object that is connecting
-          process.env.NFT1_OWNER_ID,
-          {
-            changeMethods: ["nft_approve"]
-          });
-    
+    await localStorage.setItem("counter",2);     
+        //set Approval
        let minimum_balance = await  window.walletConnection.account()
           .viewFunction( process.env.NFT1_OWNER_ID_MARKETPLACE, "storage_minimum_balance")
         let minimum = minimum_balance;
@@ -99,30 +101,38 @@ const MintingTool = (props) => {
         attachedDeposit: minimum,
         });
       
-      let sale_conditions = {
-        sale_conditions: '1',
-      };
-      await contract.nft_approve(
-        {
-          callbackUrl: `https://www.thecarbongames.com/completed`,
-          contractId: process.env.NFT1_OWNER_ID,
-          args: {
-            token_id: `${getToken_id_value}`,
-            account_id: process.env.NFT1_OWNER_ID_MARKETPLACE,
-            msg: JSON.stringify(sale_conditions),
-          },
-          gas: 300000000000000, // attached GAS (optional)
-          amount: utils.format.parseNearAmount("1") //utils.format.parseNearAmount("10")
-        }
-      );
-    
-    window.location="/completed";
-
   }
+
+  const preApproval = async () => {
+    const getToken_id_value = await localStorage.getItem('token_id_value');
+    const contract = new Contract(
+      window.walletConnection.account(), // the account object that is connecting
+      process.env.NFT1_OWNER_ID,
+      {
+        changeMethods: ["nft_approve"]
+      });
+
+    let sale_conditions = {
+      sale_conditions: '1',
+    };
+    await contract.nft_approve(
+      {
+        contractId: process.env.NFT1_OWNER_ID,
+        args: {
+          token_id: `${getToken_id_value}`,
+          account_id: process.env.NFT1_OWNER_ID_MARKETPLACE,
+          msg: JSON.stringify(sale_conditions),
+        },
+        gas: 300000000000000, // attached GAS (optional)
+        amount: utils.format.parseNearAmount("1") //utils.format.parseNearAmount("10")
+      }
+    );
+  }
+
   const mintNFT = async () => {
      //fetech data from firebase
      await localStorage.setItem("counter",1);
-         
+ 
     let docID = "";
     let metadata_description = null;
     let minted_status = null;
@@ -140,8 +150,7 @@ const MintingTool = (props) => {
         //where("mints.id", "==", mint_id)
       );
       const querySnapshot = await getDocs(nftDetails);
-  
-
+      
       querySnapshot.forEach((doc) => {
           docID = doc.id;
         if(docID == mint_id){
@@ -169,19 +178,15 @@ const MintingTool = (props) => {
       await updateDoc(mints_db, {
         minted_status: 'completed',
       });
-
- 
     
     } catch (err) {
       console.log(err);
     }
 
-    let token_id_value = `GH6900`;//`${country_code}${number}_16`;    
+    let token_id_value = `${country_code}${number}_31`;    
 
-     await localStorage.setItem("token_id_value",token_id_value);
- 
- 
- 
+    await localStorage.setItem("token_id_value",token_id_value);
+    
     //update this details from firebase
     await window.contract.nft_mint(
       {
@@ -203,10 +208,11 @@ const MintingTool = (props) => {
   return (
     <Card style={{ padding: "2vh" }}>
       <Container>
-        
+     {showLoading && <div className="text-center">
+      <ClipLoader color={"green"} loading={true} size={150} />
+      </div>
+     }
         <p>{successMessage}</p>
-      
-      
       </Container>
     </Card>
   );
