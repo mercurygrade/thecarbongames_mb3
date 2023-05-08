@@ -168,9 +168,5 @@ export const disburseFunds = async (req, res) => {
     data: responseAllClaims,
     error: null,
   });
- 
-
-  //update event disbursed status 
-  //TODO:: Mike add disbursed column to firebase
 
 }

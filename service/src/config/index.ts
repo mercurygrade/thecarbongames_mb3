@@ -3,6 +3,7 @@ const path = require("path");
 const homedir = require("os").homedir();
 export const creatorAccountId = "thecarbongames.testnet";
 export const creatorAccountIdEvents = "carbongames-events1.testnet"; //contract for events SCs
+ 
 
 export const CREDENTIALS_DIR: any = ".near-credentials";
 export const credentialsPath: any = path.join(homedir, CREDENTIALS_DIR);
@@ -14,3 +15,14 @@ export const config: any = {
   networkId: "testnet",
   nodeUrl: "https://rpc.testnet.near.org",
 };
+
+export const connectionConfig = {
+  networkId: "testnet",
+  keyStore: keyStore, // first create a key store 
+  nodeUrl: "https://rpc.testnet.near.org",
+  walletUrl: "https://wallet.testnet.near.org",
+  helperUrl: "https://helper.testnet.near.org",
+  explorerUrl: "https://explorer.testnet.near.org",
+};
+
+ 

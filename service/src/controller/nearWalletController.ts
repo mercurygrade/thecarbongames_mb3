@@ -1,7 +1,9 @@
 const { exec } = require("child_process");
 const request = require("request");
-const { connect, KeyPair, utils, providers } = require("near-api-js");
-import { keyStore, config, creatorAccountId } from "../config";
+const { connect, KeyPair, utils, providers, nearAPI, Contract, keyStores} = require("near-api-js");
+import { keyStore, config, creatorAccountId, connectionConfig } from "../config";
+
+
 export const createWallet = async (req, res) => {
   let username = `${req.body.walletname}.${creatorAccountId}`;
   await NearAccountFunc(creatorAccountId, username, "0.01", "CreateAccount")
@@ -143,7 +145,7 @@ export const getWalletDetails = async (req, res) => {
 export const listNFTs = async (req, res) => {
   let user_wallet = req.body.user_wallet; //user's near wallet
   exec(
-    `near view carbongamesnft.testnet nft_tokens_for_owner '{"account_id": "${user_wallet}"}'`,
+    `near view parisblockchain5.testnet nft_tokens_for_owner '{"account_id": "${user_wallet}"}'`,
     (err, stdout, stderr) => {
       if (err) {
         console.log(err);
@@ -153,7 +155,7 @@ export const listNFTs = async (req, res) => {
         let cleanResponse = stdout
           .replace(/\n/g, "")
           .replace(
-            `View call: carbongamesnft.testnet.nft_tokens_for_owner({\"account_id\": \"${user_wallet}\"})`,
+            `View call: parisblockchain5.testnet.nft_tokens_for_owner({\"account_id\": \"${user_wallet}\"})`,
             ""
           )
           .replace("[", "")
@@ -221,40 +223,111 @@ async function NearAccountFunc(
   }
 }
 
-
 export const listNFTsMarket = async (req, res) => {
   let from_index = req.body.from;
   let limit = req.body.limit;
-  exec(
-    `near view carbongamesnft.testnet nft_tokens '{"from_index": "${from_index}", "limit":${limit}}'`,
-    (err, stdout, stderr) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      if (!stderr) {
-        let cleanResponse = stdout
-          .replace(/\n/g, "")
-          .replace(
-            `View call: carbongamesnft.testnet.nft_tokens({\"from_index\": \"${from_index}\", \"limit\":${limit}})`,
-            ""
-         )
-          .replace("[", "")
-          .replace("]", "")
-          .split("\n")
-          .toString();
-        res.json({
-          status: "success",
-          data: cleanResponse,
-          error: null,
+  const nearConnection = await connect(connectionConfig);
+  const account = await nearConnection.account(process.env.NFT1_OWNER_ID);
+  const contract = new Contract(
+    account, // the account object that is connecting
+    process.env.NFT1_OWNER_ID,
+    {
+      // name of contract you're connecting to
+      viewMethods: ["nft_tokens"] // view methods do not change state but usually return a value
+    });
+  let nftTokens = await account
+      .viewFunction(process.env.NFT1_OWNER_ID, "nft_tokens", {
+        from_index: from_index,
+        limit: limit,
+      });
+   
+   let saleTokens = await account
+      .viewFunction(
+        process.env.NFT1_OWNER_ID_MARKETPLACE,
+        "get_sales_by_nft_contract_id",
+        {
+          nft_contract_id: process.env.NFT1_OWNER_ID,
+          from_index: "0",
+          limit: 1000,
         });
-      } else {
-        res.send({
-          status: "failed",
-          data: null,
-          error: stderr,
-        });
-      }
-    }
-  );
+   
+   let sales = [];
+   
+      for (let i = 0; i < nftTokens.length; i++) {
+          const { token_id } = nftTokens[i]
+          console.log("token_id", token_id)
+    
+          let saleToken = saleTokens.find(({ token_id: t }) => t === token_id);
+    
+          if (saleToken !== undefined) {
+            sales[i] = Object.assign(nftTokens[i], saleToken)
+          }
+        }
+  
+      res.json({
+        status: "success",
+        data: sales,
+        error: null,
+      });
+  
+
 };
+
+export const approveNFTForSale = async (req, res) => {
+  let token_id = req.body.token_id;
+  let account_id = req.body.account_id;
+  const nearConnection = await connect(connectionConfig);
+  const account = await nearConnection.account(account_id);
+  console.log(`=== token_id === ${token_id} === account_id === ${account_id} `);
+  sendStorageDeposit(account_id);
+  let sale_conditions = {
+    sale_conditions: '1',
+  };
+  
+  const contract = new Contract(
+    account, // the account object that is connecting
+    process.env.NFT1_OWNER_ID,
+    {
+      changeMethods: ["nft_approve"]
+    });
+  
+   const contractApprove =  await contract.nft_approve(
+    {
+      contractId: process.env.NFT1_OWNER_ID,
+      args: {
+        token_id: token_id,
+        account_id: process.env.NFT1_OWNER_ID_MARKETPLACE,
+        msg: JSON.stringify(sale_conditions),
+      },
+      gas: 300000000000000, // attached GAS (optional)
+      amount: utils.format.parseNearAmount("1") //utils.format.parseNearAmount("10")
+    }
+    );
+  
+    res.json({
+      status: "success",
+      data: contractApprove,
+      error: null,
+    });
+ 
+
+
+};
+
+const sendStorageDeposit = async (account_id) => {
+  const nearConnection = await connect(connectionConfig);
+  const account = await nearConnection.account(account_id);
+
+  let minimum_balance = await account
+      .viewFunction( process.env.NFT1_OWNER_ID_MARKETPLACE, "storage_minimum_balance")
+  let minimum = minimum_balance;
+  await account.functionCall({
+    contractId: process.env.NFT1_OWNER_ID_MARKETPLACE,
+    methodName: "storage_deposit",
+    args: {},
+    attachedDeposit: minimum,
+  })
+}
+
+ 
+

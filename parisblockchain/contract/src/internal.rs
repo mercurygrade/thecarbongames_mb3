@@ -53,7 +53,6 @@ pub(crate) fn assert_one_yocto() {
         "Requires attached deposit of exactly 1 yoctoNEAR",
     )
 }
-
 //Assert that the user has attached at least 1 yoctoNEAR (for security reasons and to pay for storage)
 pub(crate) fn assert_at_least_one_yocto() {
     assert!(
