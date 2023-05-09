@@ -30,3 +30,22 @@ await contract.nft_tokens({ from_index: 0, limit: 40 });
 //the above will list all minted nfts to the marketplace.
 
 # Contract Interaction snippet : Purchase NFT
+
+```js
+const contract = new Contract(
+  account, // the account object that is connecting
+  NFT1_CONTRACT_ID,
+  {
+    changeMethods: ["offer"],
+  }
+);
+const contractApprove = await contract.offer({
+  contractId: NFT1_MARKETPLACE_CONTRACT_ID,
+  args: {
+    token_id: token_id,
+    nft_contract_id: NFT1_CONTRACT_ID,
+  },
+  gas: 300000000000000, // attached GAS (optional)
+  amount: utils.format.parseNearAmount(AMOUNT),
+});
+```
