@@ -32,14 +32,12 @@ await contract.nft_tokens({ from_index: 0, limit: 40 });
 # Contract Interaction snippet : Purchase NFT
 
 ```js
-const contract = new Contract(
-  account, // the account object that is connecting
-  NFT1_CONTRACT_ID,
-  {
-    changeMethods: ["offer"],
-  }
-);
-const contractApprove = await contract.offer({
+let walletConnection = new WalletConnection(nearConnection, null);
+const account = await nearConnection.account(walletConnection.getAccountId());
+const contract = new Contract(walletConnection.account(), ContractName, {
+  changeMethods: ["offer"],
+});
+await contract.offer({
   contractId: NFT1_MARKETPLACE_CONTRACT_ID,
   args: {
     token_id: token_id,
