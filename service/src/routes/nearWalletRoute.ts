@@ -8,7 +8,8 @@ import {
   batchTransactions,
   listNFTs,
   listNFTsMarket,
-  approveNFTForSale
+  approveNFTForSale,
+  burnNFT
 } from "../controller/nearWalletController";
 const nearWalletRoute = express();
 nearWalletRoute.post("/create-wallet", createWallet);
@@ -20,5 +21,6 @@ nearWalletRoute.post("/batch-transactions", batchTransactions);
 nearWalletRoute.post("/list-nfts", listNFTs);
 nearWalletRoute.post("/list-nfts-marketplace", listNFTsMarket);
 nearWalletRoute.post("/approve-nft-forsale", approveNFTForSale);
+nearWalletRoute.post('/burn-nft', burnNFT);
 
 module.exports = nearWalletRoute;

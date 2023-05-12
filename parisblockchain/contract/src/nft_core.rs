@@ -131,7 +131,7 @@ impl NonFungibleTokenCore for Contract {
         if sender_id != previous_token.owner_id {
             authorized_id = Some(sender_id.to_string());
         }
-
+        
         // Initiating receiver's call and the callback
         // Defaulting GAS weight to 1, no attached deposit, and static GAS equal to the GAS for nft on transfer.
         ext_non_fungible_token_receiver::ext(receiver_id.clone())

@@ -47,3 +47,26 @@ await contract.offer({
   amount: utils.format.parseNearAmount(AMOUNT),
 });
 ```
+
+# Contract Interaction snippet : Burn NFT
+
+```js
+let walletConnection = new WalletConnection(nearConnection, null);
+const account = await nearConnection.account(walletConnection.getAccountId());
+const contract = new Contract(
+  account, // the account object that is connecting
+  process.env.NFT1_OWNER_ID,
+  {
+    changeMethods: ["burn_nft"],
+  }
+);
+
+const contractBurnNFT = await contract.burn_nft({
+  args: {
+    token_id: token_id,
+  },
+  gas: "30000000000000", // attached GAS (optional)
+});
+```
+
+token_id would be the token id of the particular nft the user wants to burn.

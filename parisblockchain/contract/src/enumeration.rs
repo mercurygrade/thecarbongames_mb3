@@ -1,4 +1,10 @@
 use crate::*;
+use near_sdk::json_types::U64;
+use near_sdk::serde_json::json;
+use near_sdk::serde_json::Value;
+use near_sdk::env::predecessor_account_id;
+use near_sdk::near_bindgen;
+use near_sdk::{env, Gas, Promise};
 
 #[near_bindgen]
 impl Contract {
@@ -40,6 +46,25 @@ impl Contract {
             //if there isn't a set of tokens for the passed in account ID, we'll return 0
             U128(0)
         }
+    }
+
+    pub fn burn_nft(&self, token_id: String) -> Promise {
+        let account_id = predecessor_account_id();
+        let method_name = "burn_nft".to_string();
+        let args = json!({
+            "token_id": token_id,
+            "receiver_id": account_id.clone()
+        });
+        // let prepaid_gas: Gas = env::prepaid_gas();
+        // // let gas_value: u64 = prepaid_gas.value;
+        // let prepaid_gas: U64 = env::prepaid_gas().value().into();
+        
+        Promise::new(account_id.clone()).function_call(
+            method_name,
+            args.to_string().into_bytes(),
+            0,
+            near_sdk::Gas(30000000000000),
+        )
     }
 
     //Query for all the tokens for an owner

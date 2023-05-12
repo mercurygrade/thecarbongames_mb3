@@ -2,6 +2,7 @@ const { exec } = require("child_process");
 const request = require("request");
 const { connect, KeyPair, utils, providers, nearAPI, Contract, keyStores} = require("near-api-js");
 import { keyStore, config, creatorAccountId, connectionConfig } from "../config";
+import BN from 'bn.js';
 
 
 export const createWallet = async (req, res) => {
@@ -338,4 +339,33 @@ const sendStorageDeposit = async (account_id) => {
 }
 
  
+export const burnNFT = async (req, res) => {
+  let token_id = req.body.token_id;
+  const nearConnection = await connect(connectionConfig);
+  const account = await nearConnection.account(process.env.NFT1_OWNER_ID);
+  const contract = new Contract(
+    account, // the account object that is connecting
+    process.env.NFT1_OWNER_ID,
+    {
+      changeMethods: ["burn_nft"]
+    });
+  
+   const contractBurnNFT =  await contract.burn_nft(
+    {
+      args: {
+        token_id: token_id,
+      },
+      gas: '30000000000000', // attached GAS (optional)
+    }
+    );
+  
+    res.json({
+      status: "success",
+      data: contractBurnNFT,
+      error: null,
+    });
+ 
+
+
+};
 
